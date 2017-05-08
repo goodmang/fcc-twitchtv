@@ -1,3 +1,5 @@
+import { Channel } from './../channel/channel.model';
+import { ChannelService } from './../channel.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,14 +8,36 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  username: string;
+  private invalidUser: boolean = false;
 
-  constructor() { }
+  constructor(private channelService: ChannelService) { }
 
   ngOnInit() {
   }
 
   addUser(usernameInput: HTMLInputElement) {
-    this.username = usernameInput.value;
+    this.channelService.checkUser(usernameInput.value)
+      .subscribe(
+        (result: boolean) => {
+          if (result) {
+            this.channelService.getChannel(usernameInput.value)
+              .subscribe(
+                (channel: Channel) => {
+                  if (channel) {
+                    this.channelService.addChannel(channel);
+                    this.invalidUser = false;
+                    usernameInput.value = '';
+                  }
+                }
+              );
+          } else {
+            this.invalidUser = true;
+            usernameInput.value = '';
+          }
+        },
+        (result: any) => {
+          console.log('something bad happened.')
+        }
+      );
   }
 }

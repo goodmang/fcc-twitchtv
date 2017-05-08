@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ChannelComponent } from "./channel/channel.component";
-import { Channel } from "./channel/channel.model";
-import { DashboardComponent } from "./dashboard/dashboard.component";
+import { Subscription } from 'rxjs/Subscription';
+
+import { ChannelComponent } from './channel/channel.component';
+import { Channel } from './channel/channel.model';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ChannelService } from './channel.service';
+
 
 @Component({
   selector: 'app-root',
@@ -9,25 +13,24 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  channels: Channel[] = [
-    new Channel(
-      'ESL_SC2 (test)',
-      'https://static-cdn.jtvnw.net/previews-ttv/live_user_esl_sc2-320x180.jpg', 
-      true,
-      'RERUN: TY vs. GuMiho [TvT] - Quarterfinal - IEM Katowice 2017',
-      'https://www.twitch.tv/esl_sc2'
-      ),
-    new Channel(
-      'Test_channel',
-      '',
-      false,
-      '',
-      'https://www.twitch.tv/test_channel')
-  ];
+  private channelList: Channel[] = [];
+  private subscription: Subscription;
+  private filter: string = "All";
+
+  constructor(private channelService: ChannelService) {}
 
   ngOnInit() {
-
+    this.subscription = this.channelService.channelsChanged
+      .subscribe(
+        (channels: Channel[]) => {
+          this.channelList = channels;
+        }
+      );
+    this.channelService.initChannels();
+    // this.channelList = this.channelService.getChannels();
   }
 
-
+  updateFilter(filter: string) {
+    this.filter = filter;
+  }
 }

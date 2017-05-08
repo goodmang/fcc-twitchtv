@@ -1,0 +1,14 @@
+.nav-tabs li {
+    cursor: pointer;
+}
+.nav-tabs a {
+    color: white;
+}
+
+.nav-tabs a:hover {
+    color: black;
+}
+
+.nav-tabs li.active a {
+    color: black;
+}
