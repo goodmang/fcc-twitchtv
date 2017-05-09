@@ -57,7 +57,7 @@ var AppComponent = (function () {
     function AppComponent(channelService) {
         this.channelService = channelService;
         this.channelList = [];
-        this.filter = "All";
+        this.filter = 'All';
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
